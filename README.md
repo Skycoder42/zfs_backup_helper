@@ -1,2 +1,2 @@
-# zfs_backup_helper
-Helper utilities to back up zfs snapshots to a remote non zfs system
+A sample command-line application with an entrypoint in `bin/`, library code
+in `lib/`, and example unit test in `test/`.
