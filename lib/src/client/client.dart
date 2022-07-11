@@ -15,9 +15,10 @@ class Client {
 
   Client(this._remote);
 
-  Future<void> run(String rootDataset) async {
-    final snapshots = _remote.listSnapshots(rootDataset);
-    throw UnimplementedError(snapshots.toString());
+  Future<void> runBackup(String rootDataset) async {
+    final snapshots = await _remote.listSnapshots(rootDataset);
+    // ignore: avoid_print
+    print(snapshots);
     // get list of snapshots from server
     // pass snapshots to backup controller
     // backup controller interprets + sanitizes

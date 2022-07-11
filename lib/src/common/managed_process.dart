@@ -48,7 +48,7 @@ class ManagedProcess {
     }
   }
 
-  Stream<String> run(
+  Stream<String> runLines(
     String executable,
     List<String> arguments, {
     Encoding encoding = utf8,
@@ -56,4 +56,17 @@ class ManagedProcess {
       runRaw(executable, arguments)
           .transform(encoding.decoder)
           .transform(const LineSplitter());
+
+  Future<TData> runJson<TData extends Object, TJson>(
+    String executable,
+    List<String> arguments, {
+    required TData Function(TJson) decoder,
+    Encoding encoding = utf8,
+  }) =>
+      runRaw(executable, arguments)
+          .transform(encoding.decoder)
+          .transform(json.decoder)
+          .cast<TJson>()
+          .map(decoder)
+          .single;
 }

@@ -9,6 +9,7 @@ class ClientCli {
 
   ClientCli() {
     _argParser = ArgParser()
+      ..addSeparator('Required options:')
       ..addOption(
         'host',
         abbr: 'H',
@@ -22,6 +23,7 @@ class ClientCli {
         help: 'The dataset that should be backed up.',
         valueHelp: 'dataset',
       )
+      ..addSeparator('Other:')
       ..addFlag(
         'help',
         abbr: 'h',
@@ -32,27 +34,24 @@ class ClientCli {
 
   bool get isParsed => _args != null;
 
-  String get host {
-    _assertParsed();
-    return _args!['host'] as String;
-  }
+  String get host => _assertArgs['host'] as String;
 
-  List<String> get datasets {
-    _assertParsed();
-    return _args!['dataset'] as List<String>;
-  }
+  List<String> get datasets => _assertArgs['dataset'] as List<String>;
 
-  void parse(List<String> args) {
+  void parse(List<String> rawArgs) {
     try {
-      _args = _argParser.parse(args);
+      final args = _args = _argParser.parse(rawArgs);
+
+      if (args['help'] as bool) {
+        _printHelp();
+      }
 
       if (datasets.isEmpty) {
         throw ArgParserException('At least one dataset must be given.');
       }
     } on ArgParserException catch (e) {
-      if (args.contains('--help') || args.contains('-h')) {
-        stdout.writeln(_argParser.usage);
-        exit(0);
+      if (rawArgs.contains('--help') || rawArgs.contains('-h')) {
+        _printHelp();
       } else {
         stderr
           ..writeln(e.message)
@@ -63,11 +62,18 @@ class ClientCli {
     }
   }
 
-  void _assertParsed() {
-    if (!isParsed) {
+  void _printHelp() {
+    stdout.writeln(_argParser.usage);
+    exit(0);
+  }
+
+  ArgResults get _assertArgs {
+    final args = _args;
+    if (args == null) {
       throw StateError(
         'You must call parse before you can access the cli properties!',
       );
     }
+    return args;
   }
 }
