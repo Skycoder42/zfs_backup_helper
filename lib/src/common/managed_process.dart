@@ -1,7 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:riverpod/riverpod.dart';
+
 import 'logging/logger.dart';
+
+late final managedProcessProvider = Provider(
+  (ref) => ManagedProcess(
+    ref.watch(loggerProvider),
+  ),
+);
 
 class ProcessFailure implements Exception {
   final String executable;

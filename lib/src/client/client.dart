@@ -1,4 +1,14 @@
+import 'package:riverpod/riverpod.dart';
+
 import 'remote/remote.dart';
+
+late final clientProvider = Provider.family(
+  (ref, String hostName) => Client(
+    ref.watch(
+      remoteProvider(hostName),
+    ),
+  ),
+);
 
 class Client {
   final Remote _remote;

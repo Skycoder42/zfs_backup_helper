@@ -1,9 +1,14 @@
-import 'package:args/args.dart';
+import 'package:riverpod/riverpod.dart';
+import 'package:zfs_backup_helper/src/client/client.dart';
+import 'package:zfs_backup_helper/src/client/client_cli.dart';
 
-void main(List<String> rawArgs) {
-  final parser = ArgParser(allowTrailingOptions: false);
+void main(List<String> args) async {
+  final cli = ClientCli()..parse(args);
 
-  final args = parser.parse(rawArgs);
+  final di = ProviderContainer();
+  final client = di.read(clientProvider(cli.host));
 
-  throw UnimplementedError(args.toString());
+  for (final dataset in cli.datasets) {
+    await client.run(dataset);
+  }
 }
