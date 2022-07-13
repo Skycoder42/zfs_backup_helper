@@ -13,11 +13,14 @@ void main(List<String> args) async {
     ],
   );
 
-  final commandRunner = di.read(cliRunnerProvider);
   try {
+    final commandRunner = di.read(cliRunnerProvider);
     final result = await commandRunner.run(args);
-    // ignore: avoid_print
-    print(result);
+    if (result == null) {
+      return;
+    }
+
+    await result.printTo(stdout);
   } on UsageException catch (e) {
     stderr
       ..writeln('Invalid arguments: ${e.message}')
@@ -25,5 +28,11 @@ void main(List<String> args) async {
       ..writeln('Usage:')
       ..writeln(e.usage);
     exitCode = 1;
+  } catch (e, s) {
+    di.read(loggerProvider).logException(e, s);
+    stderr.writeln(e);
+    exitCode = 1;
+  } finally {
+    di.dispose();
   }
 }

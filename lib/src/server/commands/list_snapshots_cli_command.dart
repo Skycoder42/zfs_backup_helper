@@ -1,22 +1,26 @@
 import 'dart:async';
 
+import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:riverpod/riverpod.dart';
 
+import '../../common/api/commands/list_snapshots_command.dart';
 import '../../common/api/models/snapshot.dart';
 import '../../common/managed_process.dart';
-import '../cli/cli_result.dart';
+import '../cli/cli_command.dart';
 
-late final listSnapshotsCommandProvider = Provider(
-  (ref) => ListSnapshotsCommand(
+late final listSnapshotsCliCommandProvider = Provider(
+  (ref) => ListSnapshotsCliCommand(
     ref.watch(managedProcessProvider),
   ),
 );
 
-class ListSnapshotsCommand extends Command<CliResult> {
+class ListSnapshotsCliCommand
+    extends CliCommand<List<Snapshot>, ListSnapshotRequest>
+    implements ListSnapshotsCommand {
   final ManagedProcess _managedProcess;
 
-  ListSnapshotsCommand(this._managedProcess) {
+  ListSnapshotsCliCommand(this._managedProcess) {
     argParser.addOption(
       'root',
       abbr: 'r',
@@ -45,14 +49,17 @@ datasets of the root dataset. The schema is as follows:
   bool get takesArguments => false;
 
   @override
-  FutureOr<CliResult>? run() async {
-    final root = argResults?['root'] as String?;
+  FutureOr<List<Snapshot>> call(ListSnapshotRequest request) =>
+      _zfsListSnapshots(request.rootDataset).map(_parseSnapshot).toList();
+
+  @override
+  ListSnapshotRequest parseOptions(ArgResults argResults) {
+    final root = argResults['root'] as String?;
     if (root == null) {
       throw UsageException('The "--root" option is required.', usage);
     }
 
-    final snapshots = _zfsListSnapshots(root).map(_parseSnapshot).toList();
-    return CliResult.json(snapshots);
+    return ListSnapshotRequest(rootDataset: root);
   }
 
   Stream<String> _zfsListSnapshots(String rootDataset) =>

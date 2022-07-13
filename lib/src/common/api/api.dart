@@ -1,7 +1,7 @@
-import 'models/snapshot.dart';
+import 'commands/list_snapshots_command.dart';
 
 abstract class BackupApi {
   BackupApi._();
 
-  Future<List<Snapshot>> listSnapshots(String rootDataset);
+  ListSnapshotsCommand get listSnapshots;
 }

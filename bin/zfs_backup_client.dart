@@ -5,8 +5,6 @@ import 'package:zfs_backup_helper/src/client/logging/client_logger.dart';
 import 'package:zfs_backup_helper/src/common/logging/logger.dart';
 
 void main(List<String> args) async {
-  final cli = ClientCli()..parse(args);
-
   final di = ProviderContainer(
     overrides: [
       loggerProvider.overrideWithValue(ClientLogger()),
@@ -14,6 +12,7 @@ void main(List<String> args) async {
   );
 
   try {
+    final cli = di.read(clientCliProvider(args));
     final client = di.read(clientProvider(cli.host));
 
     for (final dataset in cli.datasets) {

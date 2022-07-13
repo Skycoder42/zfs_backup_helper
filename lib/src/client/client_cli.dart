@@ -1,6 +1,11 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:riverpod/riverpod.dart';
+
+late final clientCliProvider = Provider.family(
+  (ref, List<String> args) => ClientCli()..parse(args),
+);
 
 class ClientCli {
   late final ArgParser _argParser;

@@ -5,9 +5,14 @@ import '../../common/logging/logger.dart';
 
 class ClientLogger implements Logger {
   @override
+  void logException(Object exception, StackTrace stackStrace) {
+    io.stderr.writeln(exception);
+    io.stderr.writeln('Stacktrace: $stackStrace');
+  }
+
+  @override
   void logStderr(
-    String executable,
-    List<String> arguments,
+    String commandLine,
     Stream<List<int>> stderr,
   ) {
     stderr.listen(

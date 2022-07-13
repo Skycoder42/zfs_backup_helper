@@ -23,8 +23,8 @@ class ProcessFailure implements Exception {
   });
 
   @override
-  String toString() =>
-      '$executable ${arguments.join(' ')} failed with exit code: $exitCode';
+  String toString() => '${ManagedProcess._cmdLine(executable, arguments)} '
+      'failed with exit code: $exitCode';
 }
 
 class ManagedProcess {
@@ -34,7 +34,7 @@ class ManagedProcess {
 
   Stream<List<int>> runRaw(String executable, List<String> arguments) async* {
     final process = await Process.start(executable, arguments);
-    _logger.logStderr(executable, arguments, process.stderr);
+    _logger.logStderr(_cmdLine(executable, arguments), process.stderr);
 
     yield* process.stdout;
 
@@ -69,4 +69,7 @@ class ManagedProcess {
           .cast<TJson>()
           .map(decoder)
           .single;
+
+  static String _cmdLine(String executable, List<String> arguments) =>
+      '$executable ${arguments.join(' ')}';
 }

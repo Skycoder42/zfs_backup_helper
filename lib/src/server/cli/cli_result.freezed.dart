@@ -110,8 +110,8 @@ class __$$_JsonCliResultCopyWithImpl<$Res> extends _$CliResultCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_JsonCliResult implements _JsonCliResult {
-  const _$_JsonCliResult(this.jsonData);
+class _$_JsonCliResult extends _JsonCliResult {
+  const _$_JsonCliResult(this.jsonData) : super._();
 
   @override
   final dynamic jsonData;
@@ -207,8 +207,9 @@ class _$_JsonCliResult implements _JsonCliResult {
   }
 }
 
-abstract class _JsonCliResult implements CliResult {
+abstract class _JsonCliResult extends CliResult {
   const factory _JsonCliResult(final dynamic jsonData) = _$_JsonCliResult;
+  const _JsonCliResult._() : super._();
 
   dynamic get jsonData;
   @JsonKey(ignore: true)
@@ -250,8 +251,10 @@ class __$$_LinesCliResultCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_LinesCliResult implements _LinesCliResult {
-  const _$_LinesCliResult(final List<String> lines) : _lines = lines;
+class _$_LinesCliResult extends _LinesCliResult {
+  const _$_LinesCliResult(final List<String> lines)
+      : _lines = lines,
+        super._();
 
   final List<String> _lines;
   @override
@@ -351,8 +354,9 @@ class _$_LinesCliResult implements _LinesCliResult {
   }
 }
 
-abstract class _LinesCliResult implements CliResult {
+abstract class _LinesCliResult extends CliResult {
   const factory _LinesCliResult(final List<String> lines) = _$_LinesCliResult;
+  const _LinesCliResult._() : super._();
 
   List<String> get lines;
   @JsonKey(ignore: true)
@@ -394,8 +398,8 @@ class __$$_StreamCliResultCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_StreamCliResult implements _StreamCliResult {
-  const _$_StreamCliResult(this.stream);
+class _$_StreamCliResult extends _StreamCliResult {
+  const _$_StreamCliResult(this.stream) : super._();
 
   @override
   final Stream<String> stream;
@@ -491,9 +495,10 @@ class _$_StreamCliResult implements _StreamCliResult {
   }
 }
 
-abstract class _StreamCliResult implements CliResult {
+abstract class _StreamCliResult extends CliResult {
   const factory _StreamCliResult(final Stream<String> stream) =
       _$_StreamCliResult;
+  const _StreamCliResult._() : super._();
 
   Stream<String> get stream;
   @JsonKey(ignore: true)
