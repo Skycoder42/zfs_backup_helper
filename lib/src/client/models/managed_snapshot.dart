@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:intl/intl.dart';
+
+import '../util/combine_comparable.dart';
 
 part 'managed_snapshot.freezed.dart';
 
@@ -10,10 +11,11 @@ enum SnapshotLabel {
 }
 
 @freezed
-class ManagedSnapshot with _$ManagedSnapshot {
-  static final _dateFormat = DateFormat('yyyy-MM-dd-HHmm');
+class ManagedSnapshot
+    with _$ManagedSnapshot
+    implements Comparable<ManagedSnapshot> {
   static final _snapshotRegexp = RegExp(
-    r'^(.*)_(monthly|weekly|daily)-(\d{4}-\d{2}-\d{2}-\d{4})$',
+    r'^(.*)_(monthly|weekly|daily)-(\d{4})-(\d{2})-(\d{2})-(\d{2})(\d{2})$',
   );
 
   ManagedSnapshot._();
@@ -25,6 +27,9 @@ class ManagedSnapshot with _$ManagedSnapshot {
     required SnapshotLabel label,
     required DateTime timestamp,
   }) = _ManagedSnapshot;
+
+  DateTime get date =>
+      DateTime.utc(timestamp.year, timestamp.month, timestamp.day);
 
   factory ManagedSnapshot.parse(String snapshot) {
     final match = _snapshotRegexp.matchAsPrefix(snapshot);
@@ -39,11 +44,33 @@ class ManagedSnapshot with _$ManagedSnapshot {
     return ManagedSnapshot(
       prefix: match[1]!,
       label: SnapshotLabel.values.byName(match[2]!),
-      timestamp: _dateFormat.parse(match[3]!, true),
+      timestamp: DateTime.utc(
+        int.parse(match[3]!),
+        int.parse(match[4]!),
+        int.parse(match[5]!),
+        int.parse(match[6]!),
+        int.parse(match[7]!),
+      ),
     );
   }
 
   @override
-  String toString() =>
-      '${prefix}_${label.name}-${_dateFormat.format(timestamp)}';
+  String toString() => '${prefix}_${label.name}-$_timestampString';
+
+  @override
+  int compareTo(ManagedSnapshot other) => CombinedComparation([
+        Comparation<String>.comparable(prefix, other.prefix),
+        Comparation<SnapshotLabel>.comparator(
+          (a, b) => a.index - b.index,
+          label,
+          other.label,
+        ),
+        Comparation<DateTime>.comparable(timestamp, other.timestamp),
+      ]).compare();
+
+  String get _timestampString => '${timestamp.year.toString().padLeft(4, '0')}-'
+      '${timestamp.month.toString().padLeft(2, '0')}-'
+      '${timestamp.day.toString().padLeft(2, '0')}-'
+      '${timestamp.hour.toString().padLeft(2, '0')}'
+      '${timestamp.minute.toString().padLeft(2, '0')}';
 }

@@ -9,7 +9,7 @@ import 'package:zfs_backup_helper/src/server/logging/server_logger.dart';
 void main(List<String> args) async {
   final di = ProviderContainer(
     overrides: [
-      loggerProvider.overrideWithValue(ServerLogger()),
+      loggerProvider.overrideWithProvider(serverLoggerProvider),
     ],
   );
 
@@ -20,14 +20,10 @@ void main(List<String> args) async {
       return;
     }
 
-    await result.printTo(stdout);
+    await result.pipe(stdout);
   } on UsageException catch (e) {
-    stderr
-      ..writeln('Invalid arguments: ${e.message}')
-      ..writeln()
-      ..writeln('Usage:')
-      ..writeln(e.usage);
-    exitCode = 1;
+    stderr.writeln(e);
+    exitCode = 127;
   } catch (e, s) {
     di.read(loggerProvider).logException(e, s);
     stderr.writeln(e);

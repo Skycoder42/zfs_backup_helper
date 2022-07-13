@@ -28,6 +28,13 @@ class ClientCli {
         help: 'The dataset that should be backed up.',
         valueHelp: 'dataset',
       )
+      ..addSeparator('Optional options:')
+      ..addFlag(
+        'root',
+        help: 'Pass the "--root" option to the zfs_backup_server tool. '
+            'This will enable the server to try to automatically promote to '
+            'run as root for required commands.',
+      )
       ..addSeparator('Other:')
       ..addFlag(
         'help',
@@ -42,6 +49,8 @@ class ClientCli {
   String get host => _assertArgs['host'] as String;
 
   List<String> get datasets => _assertArgs['dataset'] as List<String>;
+
+  bool get root => _assertArgs['root'] as bool;
 
   void parse(List<String> rawArgs) {
     try {

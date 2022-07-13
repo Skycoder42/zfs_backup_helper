@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../models/managed_snapshot.dart';
+import 'managed_snapshot.dart';
 
 part 'backup_task.freezed.dart';
 

@@ -1,27 +1,31 @@
 import 'package:args/command_runner.dart';
 import 'package:riverpod/riverpod.dart';
 
-import '../../common/api/api.dart';
 import '../commands/list_snapshots_cli_command.dart';
-import 'cli_result.dart';
 
 late final cliRunnerProvider = Provider(
   (ref) => CliRunner(
-    listSnapshots: ref.watch(listSnapshotsCliCommandProvider),
+    listSnapshotsCommand: ref.watch(listSnapshotsCommandProvider),
   ),
 );
 
-class CliRunner extends CommandRunner<CliResult> implements BackupApi {
+class CliRunner extends CommandRunner<Stream<List<int>>> {
   CliRunner({
-    required this.listSnapshots,
+    required ListSnapshotsCommand listSnapshotsCommand,
   }) : super(
           'zfs_backup_server',
           'Application for the server to be backed up, '
               'invoked remotely by zfs_backup_client.',
         ) {
-    addCommand(listSnapshots);
-  }
+    argParser.addFlag(
+      'root',
+      help: 'Enables automatic root promotion. Some commands require to be run '
+          'as root. With this flag enabled, those commands will attempt to '
+          'automatically run themselves as root. This is done be reinvoking '
+          'this program with the same arguments, but using sudo. If not set, '
+          'such commands will fail instead.',
+    );
 
-  @override
-  ListSnapshotsCliCommand listSnapshots;
+    addCommand(listSnapshotsCommand);
+  }
 }

@@ -1,69 +1,61 @@
 import 'dart:async';
 
-import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:riverpod/riverpod.dart';
 
-import '../../common/api/commands/list_snapshots_command.dart';
-import '../../common/api/models/snapshot.dart';
+import '../../common/env.dart';
 import '../../common/managed_process.dart';
-import '../cli/cli_command.dart';
 
-late final listSnapshotsCliCommandProvider = Provider(
-  (ref) => ListSnapshotsCliCommand(
+late final listSnapshotsCommandProvider = Provider(
+  (ref) => ListSnapshotsCommand(
     ref.watch(managedProcessProvider),
   ),
 );
 
-class ListSnapshotsCliCommand
-    extends CliCommand<List<Snapshot>, ListSnapshotRequest>
-    implements ListSnapshotsCommand {
+class ListSnapshotsCommand extends Command<Stream<List<int>>> {
+  static const commandName = 'list-snapshots';
+  static const datasetOption = 'dataset';
+
   final ManagedProcess _managedProcess;
 
-  ListSnapshotsCliCommand(this._managedProcess) {
+  ListSnapshotsCommand(this._managedProcess) {
     argParser.addOption(
-      'root',
-      abbr: 'r',
+      datasetOption,
+      abbr: 'd',
       valueHelp: 'dataset',
       help: 'Required. The root dataset that is queried for snapshots.',
     );
   }
 
   @override
-  String get name => 'list-snapshots';
+  String get name => commandName;
 
   @override
   String get description => '''
-List all snapshots off a dataset and its children.
+List all snapshots of a dataset and its children.
 
-This command will query ZFS for the snapshots and return a JSON list containing
-all snapshots of the given root dataset as well as all snapshots of all child
-datasets of the root dataset. The schema is as follows:
+This command will call "zfs list" to return all snapshots of the given
+<dataset>. It returns all snapshots, recursively for all child datasets. The
+result is a list of snapshot names (dataset@snapshot).
 
-[
-  {"name": "string", "dataset": "string"}
-]
+Invokes zfs as: `zfs ${_zfsArgs('<dataset>').join(' ')}`
 ''';
 
   @override
   bool get takesArguments => false;
 
   @override
-  FutureOr<List<Snapshot>> call(ListSnapshotRequest request) =>
-      _zfsListSnapshots(request.rootDataset).map(_parseSnapshot).toList();
-
-  @override
-  ListSnapshotRequest parseOptions(ArgResults argResults) {
-    final root = argResults['root'] as String?;
-    if (root == null) {
-      throw UsageException('The "--root" option is required.', usage);
+  Stream<List<int>> run() {
+    final args = ArgumentError.checkNotNull(argResults, 'argResults');
+    final rootDataset = args[datasetOption] as String?;
+    if (rootDataset == null) {
+      usageException('The "--$datasetOption" option is required.');
     }
 
-    return ListSnapshotRequest(rootDataset: root);
+    return _managedProcess.runRaw(zshBinary, _zfsArgs(rootDataset));
   }
 
-  Stream<String> _zfsListSnapshots(String rootDataset) =>
-      _managedProcess.runLines('zfs', [
+  List<String> _zfsArgs(String rootDataset) => [
         'list',
         '-H',
         '-r',
@@ -72,21 +64,5 @@ datasets of the root dataset. The schema is as follows:
         '-t',
         'snapshot',
         rootDataset,
-      ]);
-
-  Snapshot _parseSnapshot(String snapshot) {
-    final elements = snapshot.split('@');
-    if (elements.length != 2) {
-      throw Exception(
-        'Failed to parse snapshot "$snapshot" - '
-        'Expected dataset and snapshot name, separated by one "@", '
-        'but found ${elements.length - 1}.',
-      );
-    }
-
-    return Snapshot(
-      dataset: elements[0],
-      name: elements[1],
-    );
-  }
+      ];
 }

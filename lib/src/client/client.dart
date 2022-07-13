@@ -1,26 +1,24 @@
 import 'package:riverpod/riverpod.dart';
 
-import '../common/api/commands/list_snapshots_command.dart';
-import 'remote/remote.dart';
+import 'models/config.dart';
+import 'remote/backup_server_adapter.dart';
 
 late final clientProvider = Provider.family(
-  (ref, String hostName) => Client(
+  (ref, Config config) => Client(
     ref.watch(
-      remoteProvider(hostName),
+      backupServerAdapterProvider(config),
     ),
   ),
 );
 
 class Client {
-  final Remote _remote;
+  final BackupServerAdapter _backupServerAdapter;
 
-  Client(this._remote);
+  Client(this._backupServerAdapter);
 
   Future<void> runBackup(String rootDataset) async {
-    final snapshots = await _remote
-        .listSnapshots(ListSnapshotRequest(rootDataset: rootDataset));
-    // ignore: avoid_print
-    print(snapshots);
+    final snapshots = await _backupServerAdapter.listSnapshots(rootDataset);
+
     // pass snapshots to backup controller
     // backup controller interprets + sanitizes
   }
