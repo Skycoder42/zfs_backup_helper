@@ -18,6 +18,7 @@ void main(List<String> args) async {
     final config = Config(
       host: cli.host,
       autoRoot: cli.root,
+      backupDir: cli.backupDirectory,
     );
 
     final client = di.read(clientProvider(config));

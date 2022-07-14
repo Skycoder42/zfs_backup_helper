@@ -35,6 +35,14 @@ class ClientCli {
             'This will enable the server to try to automatically promote to '
             'run as root for required commands.',
       )
+      ..addOption(
+        'backup-directory',
+        abbr: 'b',
+        defaultsTo: '/var/local/zfs_backup_client/backups',
+        help: 'The directory where backups should be stored. '
+            'A directory for each host is created within that directory.',
+        valueHelp: 'directory',
+      )
       ..addSeparator('Other:')
       ..addFlag(
         'help',
@@ -51,6 +59,9 @@ class ClientCli {
   List<String> get datasets => _assertArgs['dataset'] as List<String>;
 
   bool get root => _assertArgs['root'] as bool;
+
+  Directory get backupDirectory =>
+      Directory(_assertArgs['backup-directory'] as String);
 
   void parse(List<String> rawArgs) {
     try {

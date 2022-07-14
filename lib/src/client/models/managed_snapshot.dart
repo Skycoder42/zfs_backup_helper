@@ -58,15 +58,11 @@ class ManagedSnapshot
   String toString() => '${prefix}_${label.name}-$_timestampString';
 
   @override
-  int compareTo(ManagedSnapshot other) => CombinedComparation([
-        Comparation<String>.comparable(prefix, other.prefix),
-        Comparation<SnapshotLabel>.comparator(
-          (a, b) => a.index - b.index,
-          label,
-          other.label,
-        ),
-        Comparation<DateTime>.comparable(timestamp, other.timestamp),
-      ]).compare();
+  int compareTo(ManagedSnapshot other) => compareAll([
+        () => prefix.compareTo(other.prefix),
+        () => label.index - other.label.index,
+        () => timestamp.compareTo(other.timestamp),
+      ]);
 
   String get _timestampString => '${timestamp.year.toString().padLeft(4, '0')}-'
       '${timestamp.month.toString().padLeft(2, '0')}-'

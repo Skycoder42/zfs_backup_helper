@@ -1,23 +1,37 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
+import 'package:riverpod/riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../models/config.dart';
+import '../models/dataset.dart';
 import '../models/managed_snapshot.dart';
 
+final storageProvider = Provider.family(
+  (ref, Config config) => Storage(config),
+);
+
 class Storage {
-  final Directory _backupRoot;
+  final Config _config;
 
-  Storage(this._backupRoot);
+  Storage(this._config);
 
-  Stream<ManagedSnapshot> listSnapshots(String dataset) =>
-      _datasetDirectory(dataset)
-          .list()
-          .whereType<File>()
-          .where((file) => path.extension(file.path) == '.backup')
-          .map((file) => path.basenameWithoutExtension(file.path))
-          .map(ManagedSnapshot.parse);
+  Stream<ManagedSnapshot> listSnapshots(Dataset dataset) async* {
+    final datasetDirectory = _datasetDirectory(dataset);
+    if (!await datasetDirectory.exists()) {
+      return;
+    }
 
-  Directory _datasetDirectory(String dataset) =>
-      Directory.fromUri(_backupRoot.uri.resolve(dataset));
+    yield* datasetDirectory
+        .list()
+        .whereType<File>()
+        .where((file) => path.extension(file.path) == '.backup')
+        .map((file) => path.basenameWithoutExtension(file.path))
+        .map(ManagedSnapshot.parse);
+  }
+
+  Directory _datasetDirectory(Dataset dataset) => Directory.fromUri(
+        _config.backupDir.uri.resolve(path.join(_config.host, dataset.name)),
+      );
 }

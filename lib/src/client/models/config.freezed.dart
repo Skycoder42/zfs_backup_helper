@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$Config {
   String get host => throw _privateConstructorUsedError;
   bool get autoRoot => throw _privateConstructorUsedError;
+  Directory get backupDir => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ConfigCopyWith<Config> get copyWith => throw _privateConstructorUsedError;
@@ -27,7 +28,7 @@ mixin _$Config {
 abstract class $ConfigCopyWith<$Res> {
   factory $ConfigCopyWith(Config value, $Res Function(Config) then) =
       _$ConfigCopyWithImpl<$Res>;
-  $Res call({String host, bool autoRoot});
+  $Res call({String host, bool autoRoot, Directory backupDir});
 }
 
 /// @nodoc
@@ -42,6 +43,7 @@ class _$ConfigCopyWithImpl<$Res> implements $ConfigCopyWith<$Res> {
   $Res call({
     Object? host = freezed,
     Object? autoRoot = freezed,
+    Object? backupDir = freezed,
   }) {
     return _then(_value.copyWith(
       host: host == freezed
@@ -52,6 +54,10 @@ class _$ConfigCopyWithImpl<$Res> implements $ConfigCopyWith<$Res> {
           ? _value.autoRoot
           : autoRoot // ignore: cast_nullable_to_non_nullable
               as bool,
+      backupDir: backupDir == freezed
+          ? _value.backupDir
+          : backupDir // ignore: cast_nullable_to_non_nullable
+              as Directory,
     ));
   }
 }
@@ -61,7 +67,7 @@ abstract class _$$_ConfigCopyWith<$Res> implements $ConfigCopyWith<$Res> {
   factory _$$_ConfigCopyWith(_$_Config value, $Res Function(_$_Config) then) =
       __$$_ConfigCopyWithImpl<$Res>;
   @override
-  $Res call({String host, bool autoRoot});
+  $Res call({String host, bool autoRoot, Directory backupDir});
 }
 
 /// @nodoc
@@ -77,6 +83,7 @@ class __$$_ConfigCopyWithImpl<$Res> extends _$ConfigCopyWithImpl<$Res>
   $Res call({
     Object? host = freezed,
     Object? autoRoot = freezed,
+    Object? backupDir = freezed,
   }) {
     return _then(_$_Config(
       host: host == freezed
@@ -87,6 +94,10 @@ class __$$_ConfigCopyWithImpl<$Res> extends _$ConfigCopyWithImpl<$Res>
           ? _value.autoRoot
           : autoRoot // ignore: cast_nullable_to_non_nullable
               as bool,
+      backupDir: backupDir == freezed
+          ? _value.backupDir
+          : backupDir // ignore: cast_nullable_to_non_nullable
+              as Directory,
     ));
   }
 }
@@ -94,16 +105,19 @@ class __$$_ConfigCopyWithImpl<$Res> extends _$ConfigCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_Config implements _Config {
-  const _$_Config({required this.host, required this.autoRoot});
+  const _$_Config(
+      {required this.host, required this.autoRoot, required this.backupDir});
 
   @override
   final String host;
   @override
   final bool autoRoot;
+  @override
+  final Directory backupDir;
 
   @override
   String toString() {
-    return 'Config(host: $host, autoRoot: $autoRoot)';
+    return 'Config(host: $host, autoRoot: $autoRoot, backupDir: $backupDir)';
   }
 
   @override
@@ -112,14 +126,16 @@ class _$_Config implements _Config {
         (other.runtimeType == runtimeType &&
             other is _$_Config &&
             const DeepCollectionEquality().equals(other.host, host) &&
-            const DeepCollectionEquality().equals(other.autoRoot, autoRoot));
+            const DeepCollectionEquality().equals(other.autoRoot, autoRoot) &&
+            const DeepCollectionEquality().equals(other.backupDir, backupDir));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(host),
-      const DeepCollectionEquality().hash(autoRoot));
+      const DeepCollectionEquality().hash(autoRoot),
+      const DeepCollectionEquality().hash(backupDir));
 
   @JsonKey(ignore: true)
   @override
@@ -129,12 +145,16 @@ class _$_Config implements _Config {
 
 abstract class _Config implements Config {
   const factory _Config(
-      {required final String host, required final bool autoRoot}) = _$_Config;
+      {required final String host,
+      required final bool autoRoot,
+      required final Directory backupDir}) = _$_Config;
 
   @override
   String get host;
   @override
   bool get autoRoot;
+  @override
+  Directory get backupDir;
   @override
   @JsonKey(ignore: true)
   _$$_ConfigCopyWith<_$_Config> get copyWith =>

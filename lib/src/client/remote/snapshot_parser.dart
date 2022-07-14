@@ -2,6 +2,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../models/backup_task.dart';
+import '../models/dataset.dart';
 import '../models/managed_snapshot.dart';
 
 late final snapshotParserProvider = Provider(
@@ -37,7 +38,7 @@ class SnapshotParser {
     String rootDataset,
   ) async =>
       BackupTask(
-        dataset: snapshotStream.key,
+        dataset: Dataset(snapshotStream.key),
         snapshots: await snapshotStream
             .map((snapshot) => ManagedSnapshot.parse(snapshot))
             .toList(),

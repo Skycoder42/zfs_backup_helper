@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$BackupTask {
-  String get dataset => throw _privateConstructorUsedError;
+  Dataset get dataset => throw _privateConstructorUsedError;
   List<ManagedSnapshot> get snapshots => throw _privateConstructorUsedError;
   bool get isRoot => throw _privateConstructorUsedError;
 
@@ -30,7 +30,9 @@ abstract class $BackupTaskCopyWith<$Res> {
   factory $BackupTaskCopyWith(
           BackupTask value, $Res Function(BackupTask) then) =
       _$BackupTaskCopyWithImpl<$Res>;
-  $Res call({String dataset, List<ManagedSnapshot> snapshots, bool isRoot});
+  $Res call({Dataset dataset, List<ManagedSnapshot> snapshots, bool isRoot});
+
+  $DatasetCopyWith<$Res> get dataset;
 }
 
 /// @nodoc
@@ -51,7 +53,7 @@ class _$BackupTaskCopyWithImpl<$Res> implements $BackupTaskCopyWith<$Res> {
       dataset: dataset == freezed
           ? _value.dataset
           : dataset // ignore: cast_nullable_to_non_nullable
-              as String,
+              as Dataset,
       snapshots: snapshots == freezed
           ? _value.snapshots
           : snapshots // ignore: cast_nullable_to_non_nullable
@@ -62,6 +64,13 @@ class _$BackupTaskCopyWithImpl<$Res> implements $BackupTaskCopyWith<$Res> {
               as bool,
     ));
   }
+
+  @override
+  $DatasetCopyWith<$Res> get dataset {
+    return $DatasetCopyWith<$Res>(_value.dataset, (value) {
+      return _then(_value.copyWith(dataset: value));
+    });
+  }
 }
 
 /// @nodoc
@@ -71,7 +80,10 @@ abstract class _$$_BackupTaskCopyWith<$Res>
           _$_BackupTask value, $Res Function(_$_BackupTask) then) =
       __$$_BackupTaskCopyWithImpl<$Res>;
   @override
-  $Res call({String dataset, List<ManagedSnapshot> snapshots, bool isRoot});
+  $Res call({Dataset dataset, List<ManagedSnapshot> snapshots, bool isRoot});
+
+  @override
+  $DatasetCopyWith<$Res> get dataset;
 }
 
 /// @nodoc
@@ -94,7 +106,7 @@ class __$$_BackupTaskCopyWithImpl<$Res> extends _$BackupTaskCopyWithImpl<$Res>
       dataset: dataset == freezed
           ? _value.dataset
           : dataset // ignore: cast_nullable_to_non_nullable
-              as String,
+              as Dataset,
       snapshots: snapshots == freezed
           ? _value._snapshots
           : snapshots // ignore: cast_nullable_to_non_nullable
@@ -117,7 +129,7 @@ class _$_BackupTask implements _BackupTask {
       : _snapshots = snapshots;
 
   @override
-  final String dataset;
+  final Dataset dataset;
   final List<ManagedSnapshot> _snapshots;
   @override
   List<ManagedSnapshot> get snapshots {
@@ -159,12 +171,12 @@ class _$_BackupTask implements _BackupTask {
 
 abstract class _BackupTask implements BackupTask {
   const factory _BackupTask(
-      {required final String dataset,
+      {required final Dataset dataset,
       required final List<ManagedSnapshot> snapshots,
       required final bool isRoot}) = _$_BackupTask;
 
   @override
-  String get dataset;
+  Dataset get dataset;
   @override
   List<ManagedSnapshot> get snapshots;
   @override

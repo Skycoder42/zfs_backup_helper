@@ -1,26 +1,29 @@
 import 'package:collection/collection.dart';
+import 'package:riverpod/riverpod.dart';
 
 import '../models/backup_task.dart';
+import '../models/config.dart';
+import '../models/managed_snapshot.dart';
 import '../storage/storage.dart';
+
+late final snapshotSelectorProvider = Provider.family(
+  (ref, Config config) => SnapshotSelector(
+    ref.watch(storageProvider(config)),
+  ),
+);
 
 class SnapshotSelector {
   final Storage _storage;
 
   SnapshotSelector(this._storage);
 
-  Future<dynamic> selectSnapshots(BackupTask rootTask) async {
+  Future<List<ManagedSnapshot>> selectSnapshots(BackupTask rootTask) async {
     final existingSnapshots =
         await _storage.listSnapshots(rootTask.dataset).toList();
 
-    final newSnapshots = rootTask.snapshots
-        .groupListsBy((snapshot) => snapshot.date)
-        .values
-        .map((snapshots) => snapshots.sorted().first)
+    return rootTask.snapshots
         .toSet()
         .difference(existingSnapshots.toSet())
-        .sorted(Comparable.compare);
-
-    // TODO check existing snapshots for required snapshots
-    throw UnimplementedError(newSnapshots.toString());
+        .sorted();
   }
 }
