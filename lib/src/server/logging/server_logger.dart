@@ -19,6 +19,16 @@ class ServerLogger implements Logger {
   ServerLogger(this._libcInterop);
 
   @override
+  void logInfo(String message) {
+    _libcInterop.syslog(level: SyslogLevel.logInfo, message: message);
+  }
+
+  @override
+  void logWarning(String message) {
+    _libcInterop.syslog(level: SyslogLevel.logWarning, message: message);
+  }
+
+  @override
   void logException(Object exception, StackTrace stackStrace) {
     _libcInterop.syslog(
       level: SyslogLevel.logErr,

@@ -10,5 +10,6 @@ class Config with _$Config {
     required String host,
     required bool autoRoot,
     required Directory backupDir,
+    required String? prefix,
   }) = _Config;
 }

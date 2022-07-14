@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' as collection;
 import 'package:riverpod/riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -11,7 +12,7 @@ late final snapshotParserProvider = Provider(
 
 class SnapshotParser {
   Future<List<BackupTask>> parseSnapshotList({
-    required String rootDataset,
+    required Dataset rootDataset,
     required Stream<String> snapshots,
   }) =>
       snapshots
@@ -22,6 +23,7 @@ class SnapshotParser {
           )
           .map((stream) => _mapBackupTask(stream, rootDataset))
           .flatMap((value) => Stream.fromFuture(value))
+          .where((backupTask) => backupTask.snapshots.isNotEmpty)
           .toList();
 
   MapEntry<String, String> _splitSnapshot(String snapshot) {
@@ -35,15 +37,20 @@ class SnapshotParser {
 
   Future<BackupTask> _mapBackupTask(
     GroupedStream<String, String> snapshotStream,
-    String rootDataset,
-  ) async =>
-      BackupTask(
-        dataset: Dataset(snapshotStream.key),
-        snapshots: await snapshotStream
-            .map((snapshot) => ManagedSnapshot.parse(snapshot))
-            .toList(),
-        isRoot: snapshotStream.key == rootDataset,
-      );
+    Dataset rootDataset,
+  ) async {
+    final parsedSnapshots = await snapshotStream
+        .where(ManagedSnapshot.isManagedSnapshot)
+        .map((snapshot) => ManagedSnapshot.parse(snapshot))
+        .toList();
+
+    final dataset = Dataset(snapshotStream.key);
+    return BackupTask(
+      dataset: dataset,
+      snapshots: parsedSnapshots.sorted(),
+      isRoot: dataset == rootDataset,
+    );
+  }
 }
 
 extension _StreamGroupMapByX<TData> on Stream<TData> {

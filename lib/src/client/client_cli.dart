@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:riverpod/riverpod.dart';
 
+import 'models/config.dart';
+import 'models/dataset.dart';
+
 late final clientCliProvider = Provider.family(
   (ref, List<String> args) => ClientCli()..parse(args),
 );
@@ -43,6 +46,13 @@ class ClientCli {
             'A directory for each host is created within that directory.',
         valueHelp: 'directory',
       )
+      ..addOption(
+        'prefix',
+        abbr: 'p',
+        help: 'Only backup snapshots with the given prefix. '
+            'If not set, all snapshots are backed up.',
+        valueHelp: 'prefix',
+      )
       ..addSeparator('Other:')
       ..addFlag(
         'help',
@@ -54,14 +64,15 @@ class ClientCli {
 
   bool get isParsed => _args != null;
 
-  String get host => _assertArgs['host'] as String;
+  Config get config => Config(
+        host: _assertArgs['host'] as String,
+        autoRoot: _assertArgs['root'] as bool,
+        backupDir: Directory(_assertArgs['backup-directory'] as String),
+        prefix: _assertArgs['prefix'] as String?,
+      );
 
-  List<String> get datasets => _assertArgs['dataset'] as List<String>;
-
-  bool get root => _assertArgs['root'] as bool;
-
-  Directory get backupDirectory =>
-      Directory(_assertArgs['backup-directory'] as String);
+  List<Dataset> get datasets =>
+      (_assertArgs['dataset'] as List<String>).map(Dataset.new).toList();
 
   void parse(List<String> rawArgs) {
     try {

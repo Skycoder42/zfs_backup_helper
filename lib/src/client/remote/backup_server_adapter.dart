@@ -3,6 +3,7 @@ import 'package:riverpod/riverpod.dart';
 import '../../server/commands/list_snapshots_cli_command.dart';
 import '../models/backup_task.dart';
 import '../models/config.dart';
+import '../models/dataset.dart';
 import 'remote_call.dart';
 import 'snapshot_parser.dart';
 
@@ -22,7 +23,7 @@ class BackupServerAdapter {
     this._snapshotParser,
   );
 
-  Future<List<BackupTask>> listSnapshots(String rootDataset) async {
+  Future<List<BackupTask>> listBackupTasks(Dataset rootDataset) async {
     final zfsStream = _remoteCall.runRemoteLines(
       ListSnapshotsCommand.commandName,
       {

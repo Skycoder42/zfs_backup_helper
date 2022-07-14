@@ -5,6 +5,10 @@ late final loggerProvider = Provider<Logger>(
 );
 
 abstract class Logger {
+  void logInfo(String message);
+
+  void logWarning(String message);
+
   void logException(Object exception, StackTrace stackStrace);
 
   void logStderr(

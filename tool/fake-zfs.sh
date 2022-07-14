@@ -11,5 +11,6 @@ case "$1" in
       echo "$set@zfs-auto-snap_daily-2022-07-03-0600"
       echo "$set@zfs-auto-snap_daily-2022-07-04-0600"
     done
+    echo "main/sub2@zfs-auto-snap_daily-2022-06-30-0600"
   ;;
 esac

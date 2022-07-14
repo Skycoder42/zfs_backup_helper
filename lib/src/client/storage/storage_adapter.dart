@@ -8,14 +8,14 @@ import '../models/config.dart';
 import '../models/dataset.dart';
 import '../models/managed_snapshot.dart';
 
-final storageProvider = Provider.family(
-  (ref, Config config) => Storage(config),
+final storageAdapterProvider = Provider.family(
+  (ref, Config config) => StorageAdapter(config),
 );
 
-class Storage {
+class StorageAdapter {
   final Config _config;
 
-  Storage(this._config);
+  StorageAdapter(this._config);
 
   Stream<ManagedSnapshot> listSnapshots(Dataset dataset) async* {
     final datasetDirectory = _datasetDirectory(dataset);

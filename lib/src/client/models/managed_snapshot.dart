@@ -18,6 +18,9 @@ class ManagedSnapshot
     r'^(.*)_(monthly|weekly|daily)-(\d{4})-(\d{2})-(\d{2})-(\d{2})(\d{2})$',
   );
 
+  static bool isManagedSnapshot(String snapshot) =>
+      _snapshotRegexp.hasMatch(snapshot);
+
   ManagedSnapshot._();
 
   @Assert('timestamp.isUtc', 'timestamp must be a UTC timestamp')
