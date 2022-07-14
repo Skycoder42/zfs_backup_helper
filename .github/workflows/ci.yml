@@ -1,0 +1,28 @@
+name: Continuous integration
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  ci:
+    name: CI
+    uses: Skycoder42/dart_test_tools/.github/workflows/dart.yml@main
+    with:
+      buildRunner: true
+      unitTestPaths: ""
+      minCoverage: 0
+      platforms: '["linux"]'
+  cd:
+    name: CD
+    needs:
+      - ci
+    uses: Skycoder42/dart_test_tools/.github/workflows/compile.yml@main
+    with:
+      buildRunner: true
+      targets: '["zfs-backup-client", "zfs-backup-server"]'

@@ -6,6 +6,13 @@ version: 1.0.0
 environment:
   sdk: ">=2.17.0 <3.0.0"
 
+platforms:
+  linux:
+
+executables:
+  zfs-backup-client: zfs_backup_client
+  zfs-backup-server: zfs_backup_server
+
 dependencies:
   args: ^2.3.1
   collection: ^1.16.0
