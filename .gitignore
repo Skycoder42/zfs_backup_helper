@@ -22,3 +22,6 @@ doc/api/
 
 # generated files
 *.freezed.dart
+
+# test files
+backup-result/

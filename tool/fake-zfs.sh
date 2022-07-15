@@ -13,4 +13,7 @@ case "$1" in
     done
     echo "main/sub2@zfs-auto-snap_daily-2022-06-30-0600"
   ;;
+  send)
+    echo "BINARY DATA FOR: $@"
+  ;;
 esac

@@ -1,33 +1,23 @@
 import 'dart:async';
-import 'dart:io' as io;
+import 'dart:convert';
+import 'package:logging/logging.dart';
+import 'package:riverpod/riverpod.dart';
+import '../../common/process_logger.dart';
 
-import '../../common/logging/logger.dart';
+late final clientProcessLoggerProvider = Provider<ProcessLogger>(
+  (ref) => ClientProcessLogger(),
+);
 
-class ClientLogger implements Logger {
-  @override
-  void logInfo(String message) {
-    io.stderr.writeln('INFO: $message');
-  }
-
-  @override
-  void logWarning(String message) {
-    io.stderr.writeln('WARNING: $message');
-  }
-
-  @override
-  void logException(Object exception, StackTrace stackStrace) {
-    io.stderr.writeln('EXCEPTION: $exception');
-    io.stderr.writeln('Stacktrace: $stackStrace');
-  }
-
+class ClientProcessLogger implements ProcessLogger {
   @override
   void logStderr(
     String commandLine,
     Stream<List<int>> stderr,
   ) {
-    stderr.listen(
-      io.stderr.add,
-      cancelOnError: false,
-    );
+    final processLogger = Logger(commandLine);
+    stderr.transform(utf8.decoder).transform(const LineSplitter()).listen(
+          (line) => processLogger.severe(line),
+          cancelOnError: false,
+        );
   }
 }

@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:riverpod/riverpod.dart';
 
-import '../../common/logging/logger.dart';
+import '../../common/process_logger.dart';
 import '../ffi/libc_interop.dart';
 
-late final serverLoggerProvider = Provider<Logger>(
+late final serverLoggerProvider = Provider<ServerLogger>(
   (ref) => ServerLogger(
     ref.watch(
       libcInteropProvider,
@@ -13,25 +13,18 @@ late final serverLoggerProvider = Provider<Logger>(
   ),
 );
 
-class ServerLogger implements Logger {
+late final serverProcessLoggerProvider = Provider<ProcessLogger>(
+  (ref) => ref.watch(serverLoggerProvider),
+);
+
+class ServerLogger implements ProcessLogger {
   final LibcInterop _libcInterop;
 
   ServerLogger(this._libcInterop);
 
-  @override
-  void logInfo(String message) {
-    _libcInterop.syslog(level: SyslogLevel.logInfo, message: message);
-  }
-
-  @override
-  void logWarning(String message) {
-    _libcInterop.syslog(level: SyslogLevel.logWarning, message: message);
-  }
-
-  @override
   void logException(Object exception, StackTrace stackStrace) {
     _libcInterop.syslog(
-      level: SyslogLevel.logErr,
+      level: SyslogLevel.logCrit,
       message: '$exception\n$stackStrace',
     );
   }

@@ -10,47 +10,58 @@ late final backupModeSelectorProvider = Provider(
 
 /// Backup policy:
 ///
-/// 1. Annually full snapshot
-/// 2. Monthly incremental based on previous month
-/// 3. Weekly incremental based on previous month or week
+/// 1. Quarterly full snapshot
+/// 2. Monthly differential based on previous quarter
+/// 3. Weekly differential based on previous month
 /// 4. Daily incremental based on previous any
 class BackupModeSelector {
+  static const _quarterMonths = [1, 4, 7, 10];
+
   BackupMode selectBackupMode({
     required ManagedSnapshot snapshot,
     required List<ManagedSnapshot> existingSnapshots,
   }) {
+    if (_isQuarterly(snapshot)) {
+      return const BackupMode.full();
+    }
+
     switch (snapshot.label) {
       case SnapshotLabel.monthly:
-        return _monthlyMode(
+        return _findBackupMode(
           snapshot: snapshot,
           existingSnapshots: existingSnapshots,
+          parentSnapshotFilter: _isQuarterly,
         );
       case SnapshotLabel.weekly:
-        return _weeklyMode(
+        return _findBackupMode(
           snapshot: snapshot,
           existingSnapshots: existingSnapshots,
+          parentSnapshotFilter: (s) => s.label == SnapshotLabel.monthly,
         );
       case SnapshotLabel.daily:
-        return _dailyMode(
+        return _findBackupMode(
           snapshot: snapshot,
           existingSnapshots: existingSnapshots,
+          parentSnapshotFilter: (_) => true,
         );
     }
   }
 
-  BackupMode _monthlyMode({
+  bool _isQuarterly(ManagedSnapshot snapshot) =>
+      snapshot.label == SnapshotLabel.monthly &&
+      _quarterMonths.contains(snapshot.timestamp.month);
+
+  BackupMode _findBackupMode({
     required ManagedSnapshot snapshot,
     required List<ManagedSnapshot> existingSnapshots,
+    required bool Function(ManagedSnapshot) parentSnapshotFilter,
   }) {
-    if (snapshot.timestamp.month == 1) {
-      return const BackupMode.full();
-    }
-
-    final parentSnapshot = _findParent(
-      snapshot: snapshot,
-      existingSnapshots: existingSnapshots,
-      filter: (s) => s.label == SnapshotLabel.monthly,
-    );
+    final parentSnapshot = existingSnapshots
+        .where((s) => s.prefix == snapshot.prefix)
+        .where(parentSnapshotFilter)
+        .where((s) => !s.timestamp.isAfter(snapshot.timestamp))
+        .sorted()
+        .lastOrNull;
 
     if (parentSnapshot == null) {
       return const BackupMode.full();
@@ -58,51 +69,4 @@ class BackupModeSelector {
       return BackupMode.incremental(parentSnapshot);
     }
   }
-
-  BackupMode _weeklyMode({
-    required ManagedSnapshot snapshot,
-    required List<ManagedSnapshot> existingSnapshots,
-  }) {
-    final parentSnapshot = _findParent(
-      snapshot: snapshot,
-      existingSnapshots: existingSnapshots,
-      filter: (s) =>
-          s.label == SnapshotLabel.monthly || s.label == SnapshotLabel.weekly,
-    );
-
-    if (parentSnapshot == null) {
-      return const BackupMode.full();
-    } else {
-      return BackupMode.incremental(parentSnapshot);
-    }
-  }
-
-  BackupMode _dailyMode({
-    required ManagedSnapshot snapshot,
-    required List<ManagedSnapshot> existingSnapshots,
-  }) {
-    final parentSnapshot = _findParent(
-      snapshot: snapshot,
-      existingSnapshots: existingSnapshots,
-      filter: (_) => true,
-    );
-
-    if (parentSnapshot == null) {
-      return const BackupMode.full();
-    } else {
-      return BackupMode.incremental(parentSnapshot);
-    }
-  }
-
-  ManagedSnapshot? _findParent({
-    required ManagedSnapshot snapshot,
-    required List<ManagedSnapshot> existingSnapshots,
-    required bool Function(ManagedSnapshot) filter,
-  }) =>
-      existingSnapshots
-          .where((s) => s.prefix == snapshot.prefix)
-          .where(filter)
-          .where((s) => s.timestamp.isBefore(snapshot.timestamp))
-          .sorted()
-          .lastOrNull;
 }

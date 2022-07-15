@@ -4,24 +4,29 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:meta/meta.dart';
 
+import '../../common/env.dart';
 import '../../common/managed_process.dart';
 import '../ffi/libc_interop.dart';
 
 abstract class RootCommand extends Command<Stream<List<int>>> {
   final LibcInterop _libcInterop;
-  final ManagedProcess _managedProcess;
 
-  RootCommand(this._libcInterop, this._managedProcess);
+  @protected
+  final ManagedProcess managedProcess;
+
+  RootCommand(this.managedProcess, this._libcInterop);
 
   @override
   FutureOr<Stream<List<int>>>? run() {
     final globalArgs =
         ArgumentError.checkNotNull(globalResults, 'globalResults');
 
-    if (_libcInterop.geteuid() == 0) {
+    if (isLocalDebugMode) {
+      return runAsRoot();
+    } else if (_libcInterop.geteuid() == 0) {
       return runAsRoot();
     } else if (globalArgs['root'] as bool) {
-      return _managedProcess.runRaw('sudo', _collectCommand());
+      return managedProcess.runRaw('sudo', _collectCommand());
     } else {
       throw Exception(
         'Command $name requires root permissions to be executed. '

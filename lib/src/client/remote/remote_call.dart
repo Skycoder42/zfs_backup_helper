@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:logging/logging.dart';
 import 'package:riverpod/riverpod.dart';
 
 import '../../common/env.dart';
@@ -17,6 +18,7 @@ late final remoteCallProvider = Provider.family(
 class RemoteCall {
   final ManagedProcess _managedProcess;
   final Config _config;
+  final _logger = Logger('$RemoteCall');
 
   RemoteCall(this._managedProcess, this._config);
 
@@ -35,6 +37,10 @@ class RemoteCall {
   ) {
     final commandLine = _buildCommandLine(command, arguments);
     if (isLocalDebugMode) {
+      _logger.finer(
+        'Running zfs_backup_server in debug mode '
+        'with command line: $commandLine',
+      );
       return _managedProcess.runRaw(
         'dart',
         [
@@ -48,6 +54,10 @@ class RemoteCall {
         ],
       );
     } else {
+      _logger.finer(
+        'Running zfs_backup_server via SSH on host "${_config.host}" '
+        'with command line: $commandLine',
+      );
       return _managedProcess.runRaw(
         'ssh',
         [

@@ -14,11 +14,13 @@
       ],
       "program": "bin/zfs_backup_client.dart",
       "args": [
-        "-H",
+        "--host",
         "example.com",
-        "-d",
+        "--dataset",
         "main",
-      ]
+        "--backup-directory",
+        "./backup-result"
+      ],
     }
   ]
 }

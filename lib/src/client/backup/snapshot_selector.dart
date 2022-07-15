@@ -1,23 +1,20 @@
 import 'package:collection/collection.dart';
+import 'package:logging/logging.dart';
 import 'package:riverpod/riverpod.dart';
 
-import '../../common/logging/logger.dart';
 import '../models/backup_task.dart';
 import '../models/config.dart';
 import '../models/managed_snapshot.dart';
 
 late final snapshotSelectorProvider = Provider.family(
-  (ref, Config config) => SnapshotSelector(
-    ref.watch(loggerProvider),
-    config,
-  ),
+  (ref, Config config) => SnapshotSelector(config),
 );
 
 class SnapshotSelector {
-  final Logger _logger;
   final Config _config;
+  final _logger = Logger('$SnapshotSelector');
 
-  SnapshotSelector(this._logger, this._config);
+  SnapshotSelector(this._config);
 
   Future<List<BackupTask>> selectSnapshots({
     required List<BackupTask> remoteTasks,
@@ -29,6 +26,14 @@ class SnapshotSelector {
         .where(_filterByPrefix)
         .toSet()
         .difference(existingSnapshots.toSet());
+    _logger.info(
+      'Determined ${snapshotsToBackup.length} snapshots to backup',
+    );
+    if (_logger.isLoggable(Level.FINE)) {
+      for (final snapshot in snapshotsToBackup) {
+        _logger.fine('> $snapshot');
+      }
+    }
 
     if (snapshotsToBackup.isEmpty) {
       return const [];
@@ -57,15 +62,16 @@ class SnapshotSelector {
 
     final missingSnaps = snapshotsToSync.difference(taskSnapshots);
     for (final snapshot in missingSnaps) {
-      _logger.logWarning(
-        'Skipping missing snapshot: ${backupTask.dataset}@$snapshot',
+      _logger.warning(
+        'Skipping backup of missing snapshot: ${backupTask.dataset}@$snapshot',
       );
     }
 
     final additionalSnaps = taskSnapshots.difference(snapshotsToSync);
     for (final snapshot in additionalSnaps) {
-      _logger.logWarning(
-        'Skipping unexpected snapshot: ${backupTask.dataset}@$snapshot',
+      _logger.warning(
+        'Skipping backup of unexpected snapshot: '
+        '${backupTask.dataset}@$snapshot',
       );
     }
 

@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:riverpod/riverpod.dart';
 
-import 'logging/logger.dart';
+import 'process_logger.dart';
 
 late final managedProcessProvider = Provider(
   (ref) => ManagedProcess(
-    ref.watch(loggerProvider),
+    ref.watch(processLoggerProvider),
   ),
 );
 
@@ -28,7 +28,7 @@ class ProcessFailure implements Exception {
 }
 
 class ManagedProcess {
-  final Logger _logger;
+  final ProcessLogger _logger;
 
   ManagedProcess(this._logger);
 
