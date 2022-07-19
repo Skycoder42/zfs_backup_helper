@@ -52,7 +52,7 @@ Invokes zfs as: `zfs ${_zfsArgs('<dataset>').join(' ')}`
       usageException('The "--$datasetOption" option is required.');
     }
 
-    return _managedProcess.runRaw(zshBinary, _zfsArgs(rootDataset));
+    return _managedProcess.runRaw(zfsBinary, _zfsArgs(rootDataset));
   }
 
   List<String> _zfsArgs(String rootDataset) => [

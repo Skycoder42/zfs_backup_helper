@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:riverpod/riverpod.dart';
@@ -22,27 +23,26 @@ class ServerLogger implements ProcessLogger {
 
   ServerLogger(this._libcInterop);
 
-  void logException(Object exception, StackTrace stackStrace) {
+  void logException(Object exception, StackTrace stackTrace) {
     _libcInterop.syslog(
-      level: SyslogLevel.logCrit,
-      message: '$exception\n$stackStrace',
+      level: SyslogLevel.logErr,
+      message: '$exception\n$stackTrace',
     );
   }
 
   @override
-  void logStderr(
+  StreamSubscription<void> logStderr(
     String commandLine,
     Stream<List<int>> stderr,
-  ) {
-    stderr
-        .transform(utf8.decoder)
-        .transform(const LineSplitter())
-        .map((line) => '$commandLine: $line')
-        .listen(
-          (event) => _libcInterop.syslog(
-            level: SyslogLevel.logWarning,
-            message: event,
-          ),
-        );
-  }
+  ) =>
+      stderr
+          .transform(utf8.decoder)
+          .transform(const LineSplitter())
+          .map((line) => '$commandLine: $line')
+          .listen(
+            (event) => _libcInterop.syslog(
+              level: SyslogLevel.logWarning,
+              message: event,
+            ),
+          );
 }

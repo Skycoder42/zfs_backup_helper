@@ -10,7 +10,7 @@
       "type": "dart",
       "toolArgs": [
         "-DLOCAL_DEBUG=true",
-        "-DFAKE_ZSH_BIN=./tool/fake-zfs.sh",
+        "-DFAKE_ZFS_BIN=./tool/fake-zfs.sh",
       ],
       "program": "bin/zfs_backup_client.dart",
       "args": [

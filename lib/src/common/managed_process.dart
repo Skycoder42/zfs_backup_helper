@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:riverpod/riverpod.dart';
@@ -47,28 +46,6 @@ class ManagedProcess {
       );
     }
   }
-
-  Stream<String> runLines(
-    String executable,
-    List<String> arguments, {
-    Encoding encoding = utf8,
-  }) =>
-      runRaw(executable, arguments)
-          .transform(encoding.decoder)
-          .transform(const LineSplitter());
-
-  Future<TData> runJson<TData extends Object, TJson>(
-    String executable,
-    List<String> arguments, {
-    required TData Function(TJson) decoder,
-    Encoding encoding = utf8,
-  }) =>
-      runRaw(executable, arguments)
-          .transform(encoding.decoder)
-          .transform(json.decoder)
-          .cast<TJson>()
-          .map(decoder)
-          .single;
 
   static String _cmdLine(String executable, List<String> arguments) =>
       '$executable ${arguments.join(' ')}';

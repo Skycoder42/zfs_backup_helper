@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:meta/meta.dart';
@@ -7,14 +6,20 @@ import 'package:meta/meta.dart';
 import '../../common/env.dart';
 import '../../common/managed_process.dart';
 import '../ffi/libc_interop.dart';
+import 'executable_info.dart';
 
 abstract class RootCommand extends Command<Stream<List<int>>> {
   final LibcInterop _libcInterop;
+  final ExecutableInfo _executableInfo;
 
   @protected
   final ManagedProcess managedProcess;
 
-  RootCommand(this.managedProcess, this._libcInterop);
+  RootCommand(
+    this.managedProcess,
+    this._libcInterop,
+    this._executableInfo,
+  );
 
   @override
   FutureOr<Stream<List<int>>>? run() {
@@ -38,6 +43,7 @@ abstract class RootCommand extends Command<Stream<List<int>>> {
   }
 
   @protected
+  @visibleForTesting
   FutureOr<Stream<List<int>>>? runAsRoot();
 
   List<String> _collectCommand() {
@@ -49,7 +55,7 @@ abstract class RootCommand extends Command<Stream<List<int>>> {
     }
 
     return [
-      Platform.script.toFilePath(),
+      _executableInfo.executablePath,
       ...?globalResults?.arguments,
       ...reverseCommandChain.reversed,
       ...?argResults?.arguments,

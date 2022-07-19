@@ -1,21 +1,19 @@
 import 'package:args/command_runner.dart';
 import 'package:riverpod/riverpod.dart';
 
-import '../commands/list_snapshots_command.dart';
-import '../commands/send_snapshot_command.dart';
+import 'commands/list_snapshots_command.dart';
+import 'commands/send_snapshot_command.dart';
 
 late final cliRunnerProvider = Provider(
-  (ref) => CliRunner(
-    listSnapshotsCommand: ref.watch(listSnapshotsCommandProvider),
-    sendSnapshotCommand: ref.watch(sendSnapshotCommandProvider),
-  ),
+  (ref) => CliRunner([
+    ref.watch(listSnapshotsCommandProvider),
+    ref.watch(sendSnapshotCommandProvider),
+  ]),
 );
 
 class CliRunner extends CommandRunner<Stream<List<int>>> {
-  CliRunner({
-    required ListSnapshotsCommand listSnapshotsCommand,
-    required SendSnapshotCommand sendSnapshotCommand,
-  }) : super(
+  CliRunner(List<Command<Stream<List<int>>>> commands)
+      : super(
           'zfs_backup_server',
           'Application for the server to be backed up, '
               'invoked remotely by zfs_backup_client.',
@@ -29,7 +27,6 @@ class CliRunner extends CommandRunner<Stream<List<int>>> {
           'such commands will fail instead.',
     );
 
-    addCommand(listSnapshotsCommand);
-    addCommand(sendSnapshotCommand);
+    commands.forEach(addCommand);
   }
 }

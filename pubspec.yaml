@@ -10,8 +10,8 @@ platforms:
   linux:
 
 executables:
-  zfs-backup-client: zfs_backup_client
-  zfs-backup-server: zfs_backup_server
+  zfs_backup_client:
+  zfs_backup_server:
 
 dependencies:
   args: ^2.3.1
@@ -29,4 +29,5 @@ dev_dependencies:
   dart_pre_commit: ^3.0.1
   dart_test_tools: ^3.3.3
   freezed: ^2.1.0+1
+  mocktail: ^0.3.0
   test: ^1.21.4

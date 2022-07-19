@@ -1,5 +1,8 @@
+// coverage:ignore-file
+
 import 'dart:ffi' as ffi;
 import 'package:ffi/ffi.dart';
+import 'package:meta/meta.dart';
 import 'package:riverpod/riverpod.dart';
 
 enum SyslogLevel {
@@ -89,6 +92,9 @@ class LibcInterop {
   LibcInterop([this._alloc = calloc]) {
     _process = ffi.DynamicLibrary.process();
   }
+
+  @visibleForTesting
+  LibcInterop.testable(this._alloc, this._process);
 
   void syslog({
     required SyslogLevel level,

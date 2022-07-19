@@ -16,7 +16,8 @@ jobs:
     with:
       buildRunner: true
       extendedAnalyzerArgs: --linter test-import # Do not run the lib-export linter
-      unitTestPaths: ""
+      unitTestPaths: test/unit
+      integrationTestPaths: test/integration
       minCoverage: 0
       platforms: '["linux"]'
   cd:
@@ -26,4 +27,5 @@ jobs:
     uses: Skycoder42/dart_test_tools/.github/workflows/compile.yml@main
     with:
       buildRunner: true
-      targets: '["zfs-backup-client", "zfs-backup-server"]'
+      targets: '["zfs_backup_client", "zfs_backup_server"]'
+      platforms: '["linux"]'

@@ -5,13 +5,15 @@ import 'package:riverpod/riverpod.dart';
 
 import '../../common/env.dart';
 import '../../common/managed_process.dart';
-import '../cli/root_command.dart';
 import '../ffi/libc_interop.dart';
+import 'executable_info.dart';
+import 'root_command.dart';
 
 late final sendSnapshotCommandProvider = Provider(
   (ref) => SendSnapshotCommand(
     ref.watch(managedProcessProvider),
     ref.watch(libcInteropProvider),
+    ref.watch(executableInfoProvider),
   ),
 );
 
@@ -21,7 +23,11 @@ class SendSnapshotCommand extends RootCommand {
   static const snapshotOption = 'snapshot';
   static const incrementalOption = 'incremental';
 
-  SendSnapshotCommand(super.managedProcess, super._libcInterop) {
+  SendSnapshotCommand(
+    super.managedProcess,
+    super._libcInterop,
+    super._executableInfo,
+  ) {
     argParser
       ..addOption(
         datasetOption,
@@ -80,7 +86,7 @@ Incremental invokes zfs as: `zfs ${_zfsArgs(
     final incrementalParent = args[incrementalOption] as String?;
 
     return managedProcess.runRaw(
-      zshBinary,
+      zfsBinary,
       _zfsArgs(
         dataset: dataset,
         snapshot: snapshot,

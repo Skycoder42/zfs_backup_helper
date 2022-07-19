@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:zfs_backup_helper/src/common/process_logger.dart';
-import 'package:zfs_backup_helper/src/server/cli/cli_runner.dart';
+import 'package:zfs_backup_helper/src/server/cli_runner.dart';
 import 'package:zfs_backup_helper/src/server/logging/server_logger.dart';
 
 void main(List<String> args) async {
