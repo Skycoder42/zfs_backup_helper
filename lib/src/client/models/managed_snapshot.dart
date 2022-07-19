@@ -31,9 +31,6 @@ class ManagedSnapshot
     required DateTime timestamp,
   }) = _ManagedSnapshot;
 
-  DateTime get date =>
-      DateTime.utc(timestamp.year, timestamp.month, timestamp.day);
-
   factory ManagedSnapshot.parse(String snapshot) {
     final match = _snapshotRegexp.matchAsPrefix(snapshot);
     if (match == null) {
@@ -56,6 +53,9 @@ class ManagedSnapshot
       ),
     );
   }
+
+  DateTime get date =>
+      DateTime.utc(timestamp.year, timestamp.month, timestamp.day);
 
   @override
   String toString() => '${prefix}_${label.name}-$_timestampString';

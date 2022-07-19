@@ -31,7 +31,9 @@ class StorageAdapter {
         .whereType<File>()
         .where((file) => path.extension(file.path) == '.backup')
         .map((file) => path.basenameWithoutExtension(file.path))
-        .map(ManagedSnapshot.parse);
+        .where(ManagedSnapshot.isManagedSnapshot)
+        .map(ManagedSnapshot.parse)
+        .where((snapshot) => snapshot.prefix == _config.prefix);
   }
 
   Future<void> storeSnapshot(
