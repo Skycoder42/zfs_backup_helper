@@ -4,7 +4,7 @@ import 'package:riverpod/riverpod.dart';
 import 'commands/list_snapshots_command.dart';
 import 'commands/send_snapshot_command.dart';
 
-late final cliRunnerProvider = Provider(
+final cliRunnerProvider = Provider(
   (ref) => CliRunner([
     ref.watch(listSnapshotsCommandProvider),
     ref.watch(sendSnapshotCommandProvider),

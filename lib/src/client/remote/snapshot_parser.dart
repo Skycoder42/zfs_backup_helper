@@ -6,7 +6,7 @@ import '../models/backup_task.dart';
 import '../models/dataset.dart';
 import '../models/managed_snapshot.dart';
 
-late final snapshotParserProvider = Provider(
+final snapshotParserProvider = Provider(
   (ref) => SnapshotParser(),
 );
 
@@ -22,7 +22,7 @@ class SnapshotParser {
             mapper: (snapshot) => snapshot.value,
           )
           .map((stream) => _mapBackupTask(stream, rootDataset))
-          .flatMap((value) => Stream.fromFuture(value))
+          .flatMap(Stream.fromFuture)
           .where((backupTask) => backupTask.snapshots.isNotEmpty)
           .toList();
 
@@ -41,7 +41,7 @@ class SnapshotParser {
   ) async {
     final parsedSnapshots = await snapshotStream
         .where(ManagedSnapshot.isManagedSnapshot)
-        .map((snapshot) => ManagedSnapshot.parse(snapshot))
+        .map(ManagedSnapshot.parse)
         .toList();
 
     final dataset = Dataset(snapshotStream.key);

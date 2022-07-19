@@ -9,7 +9,7 @@ import '../ffi/libc_interop.dart';
 import 'executable_info.dart';
 import 'root_command.dart';
 
-late final sendSnapshotCommandProvider = Provider(
+final sendSnapshotCommandProvider = Provider(
   (ref) => SendSnapshotCommand(
     ref.watch(managedProcessProvider),
     ref.watch(libcInteropProvider),
@@ -25,8 +25,8 @@ class SendSnapshotCommand extends RootCommand {
 
   SendSnapshotCommand(
     super.managedProcess,
-    super._libcInterop,
-    super._executableInfo,
+    super.libcInterop,
+    super.executableInfo,
   ) {
     argParser
       ..addOption(

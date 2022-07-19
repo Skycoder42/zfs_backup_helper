@@ -1,6 +1,6 @@
 import 'package:riverpod/riverpod.dart';
 
-late final processLoggerProvider = Provider<ProcessLogger>(
+final processLoggerProvider = Provider<ProcessLogger>(
   (ref) => throw StateError('No logger provided'),
 );
 

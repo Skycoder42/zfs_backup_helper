@@ -6,7 +6,7 @@ import 'package:riverpod/riverpod.dart';
 import '../../common/process_logger.dart';
 import '../ffi/libc_interop.dart';
 
-late final serverLoggerProvider = Provider<ServerLogger>(
+final serverLoggerProvider = Provider<ServerLogger>(
   (ref) => ServerLogger(
     ref.watch(
       libcInteropProvider,
@@ -14,7 +14,7 @@ late final serverLoggerProvider = Provider<ServerLogger>(
   ),
 );
 
-late final serverProcessLoggerProvider = Provider<ProcessLogger>(
+final serverProcessLoggerProvider = Provider<ProcessLogger>(
   (ref) => ref.watch(serverLoggerProvider),
 );
 

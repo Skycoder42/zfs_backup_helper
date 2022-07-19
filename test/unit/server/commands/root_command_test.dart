@@ -27,8 +27,8 @@ class SutRootCommand extends RootCommand {
 
   SutRootCommand(
     super.managedProcess,
-    super._libcInterop,
-    super._executableInfo,
+    super.libcInterop,
+    super.executableInfo,
   );
 
   @override
@@ -78,14 +78,14 @@ void main() {
       test('runs runAsRoot if already the root user', () {
         final data = Stream.value([1, 2, 3]);
 
-        when(() => mockLibcInterop.geteuid()).thenReturn(0);
+        when(mockLibcInterop.geteuid).thenReturn(0);
         when(() => sut.mock.runAsRoot()).thenAnswer((i) => data);
 
         final result = sut.run();
 
         verifyInOrder([
           () => sut.mock.globalResults,
-          () => mockLibcInterop.geteuid(),
+          mockLibcInterop.geteuid,
           () => sut.mock.runAsRoot(),
         ]);
         expect(result, same(data));
@@ -115,14 +115,14 @@ void main() {
         when(() => mockExecutableInfo.executablePath)
             .thenReturn(executablePath);
 
-        when(() => mockLibcInterop.geteuid()).thenReturn(42);
+        when(mockLibcInterop.geteuid).thenReturn(42);
         when<dynamic>(() => mockGlobalArgs[any()]).thenReturn(true);
         when(() => mockManagedProcess.runRaw(any(), any())).thenStream(data);
 
         final result = sut.run();
 
         verifyInOrder<dynamic>([
-          () => mockLibcInterop.geteuid(),
+          mockLibcInterop.geteuid,
           () => mockGlobalArgs['root'],
           () => sut.mock.name,
           () => sut.mock.parent,
@@ -145,14 +145,14 @@ void main() {
       });
 
       test('throws exception if not root and root option not set', () async {
-        when(() => mockLibcInterop.geteuid()).thenReturn(42);
+        when(mockLibcInterop.geteuid).thenReturn(42);
         when<dynamic>(() => mockGlobalArgs[any()]).thenReturn(false);
         when(() => sut.mock.name).thenReturn('test-command');
 
         await expectLater(() => sut.run(), throwsA(isException));
 
         verifyInOrder<dynamic>([
-          () => mockLibcInterop.geteuid(),
+          mockLibcInterop.geteuid,
           () => mockGlobalArgs['root'],
         ]);
       });

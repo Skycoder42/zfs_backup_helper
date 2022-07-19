@@ -11,7 +11,7 @@ import '../models/managed_snapshot.dart';
 import 'remote_call.dart';
 import 'snapshot_parser.dart';
 
-late final backupServerAdapterProvider = Provider.family(
+final backupServerAdapterProvider = Provider.family(
   (ref, Config config) => BackupServerAdapter(
     ref.watch(remoteCallProvider(config)),
     ref.watch(snapshotParserProvider),

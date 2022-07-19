@@ -74,7 +74,7 @@ enum SyslogFacility {
   const SyslogFacility(this.facility);
 }
 
-late final libcInteropProvider = Provider(
+final libcInteropProvider = Provider(
   (ref) => LibcInterop(),
 );
 

@@ -8,7 +8,7 @@ import '../../common/env.dart';
 import '../../common/managed_process.dart';
 import '../models/config.dart';
 
-late final remoteCallProvider = Provider.family(
+final remoteCallProvider = Provider.family(
   (ref, Config config) => RemoteCall(
     ref.watch(managedProcessProvider),
     config,

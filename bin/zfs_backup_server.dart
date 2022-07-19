@@ -24,7 +24,7 @@ void main(List<String> args) async {
   } on UsageException catch (e) {
     stderr.writeln(e);
     exitCode = 127;
-  } catch (e, s) {
+  } on Exception catch (e, s) {
     di.read(serverLoggerProvider).logException(e, s);
     stderr.writeln(e);
     exitCode = 1;

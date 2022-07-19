@@ -4,7 +4,7 @@ import 'backup/backup_manager.dart';
 import 'models/config.dart';
 import 'models/dataset.dart';
 
-late final clientProvider = Provider.family(
+final clientProvider = Provider.family(
   (ref, Config config) => Client(
     ref.watch(backupManagerProvider(config)),
   ),

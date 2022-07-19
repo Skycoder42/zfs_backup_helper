@@ -6,7 +6,7 @@ import 'package:riverpod/riverpod.dart';
 import '../../common/env.dart';
 import '../../common/managed_process.dart';
 
-late final listSnapshotsCommandProvider = Provider(
+final listSnapshotsCommandProvider = Provider(
   (ref) => ListSnapshotsCommand(
     ref.watch(managedProcessProvider),
   ),

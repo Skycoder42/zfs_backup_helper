@@ -6,7 +6,7 @@ import '../models/backup_task.dart';
 import '../models/config.dart';
 import '../models/managed_snapshot.dart';
 
-late final snapshotSelectorProvider = Provider.family(
+final snapshotSelectorProvider = Provider.family(
   (ref, Config config) => SnapshotSelector(config),
 );
 

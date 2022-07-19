@@ -25,8 +25,8 @@ class SutSendSnapshotCommand extends SendSnapshotCommand {
 
   SutSendSnapshotCommand(
     super.managedProcess,
-    super._libcInterop,
-    super._executableInfo,
+    super.libcInterop,
+    super.executableInfo,
     this.argResults,
   );
 }

@@ -4,7 +4,7 @@ import 'package:riverpod/riverpod.dart';
 
 import 'process_logger.dart';
 
-late final managedProcessProvider = Provider(
+final managedProcessProvider = Provider(
   (ref) => ManagedProcess(
     ref.watch(processLoggerProvider),
   ),

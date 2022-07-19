@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:riverpod/riverpod.dart';
 import '../../common/process_logger.dart';
 
-late final clientProcessLoggerProvider = Provider<ProcessLogger>(
+final clientProcessLoggerProvider = Provider<ProcessLogger>(
   (ref) => ClientProcessLogger(),
 );
 
@@ -16,7 +16,7 @@ class ClientProcessLogger implements ProcessLogger {
   ) {
     final processLogger = Logger(commandLine);
     stderr.transform(utf8.decoder).transform(const LineSplitter()).listen(
-          (line) => processLogger.severe(line),
+          processLogger.severe,
           cancelOnError: false,
         );
   }

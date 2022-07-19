@@ -6,7 +6,7 @@ import 'package:riverpod/riverpod.dart';
 import 'models/config.dart';
 import 'models/dataset.dart';
 
-late final clientCliProvider = Provider.family(
+final clientCliProvider = Provider.family(
   (ref, List<String> args) => ClientCli()..parse(args),
 );
 

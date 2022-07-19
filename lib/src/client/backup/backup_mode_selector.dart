@@ -4,7 +4,7 @@ import 'package:riverpod/riverpod.dart';
 import '../models/backup_mode.dart';
 import '../models/managed_snapshot.dart';
 
-late final backupModeSelectorProvider = Provider(
+final backupModeSelectorProvider = Provider(
   (ref) => BackupModeSelector(),
 );
 

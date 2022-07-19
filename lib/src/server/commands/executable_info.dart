@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:riverpod/riverpod.dart';
 
-late final executableInfoProvider = Provider(
+final executableInfoProvider = Provider(
   (ref) => ExecutableInfo(),
 );
 

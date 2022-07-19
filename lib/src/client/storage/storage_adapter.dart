@@ -22,7 +22,7 @@ class StorageAdapter {
   Stream<ManagedSnapshot> listSnapshots(Dataset dataset) async* {
     final datasetDirectory = _datasetDirectory(dataset);
     _logger.fine('Found directory for dataset "$dataset": $datasetDirectory');
-    if (!await datasetDirectory.exists()) {
+    if (!datasetDirectory.existsSync()) {
       return;
     }
 
