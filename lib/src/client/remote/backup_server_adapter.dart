@@ -14,7 +14,7 @@ import 'snapshot_parser.dart';
 final backupServerAdapterProvider = Provider.family(
   (ref, Config config) => BackupServerAdapter(
     ref.watch(remoteCallProvider(config)),
-    ref.watch(snapshotParserProvider),
+    ref.watch(snapshotParserProvider(config)),
   ),
 );
 

@@ -3,14 +3,19 @@ import 'package:riverpod/riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../models/backup_task.dart';
+import '../models/config.dart';
 import '../models/dataset.dart';
-import '../models/managed_snapshot.dart';
+import '../models/util/managed_snapshot_transformer.dart';
 
-final snapshotParserProvider = Provider(
-  (ref) => SnapshotParser(),
+final snapshotParserProvider = Provider.family(
+  (ref, Config config) => SnapshotParser(config),
 );
 
 class SnapshotParser {
+  final Config _config;
+
+  SnapshotParser(this._config);
+
   Future<List<BackupTask>> parseSnapshotList({
     required Dataset rootDataset,
     required Stream<String> snapshots,
@@ -39,10 +44,8 @@ class SnapshotParser {
     GroupedStream<String, String> snapshotStream,
     Dataset rootDataset,
   ) async {
-    final parsedSnapshots = await snapshotStream
-        .where(ManagedSnapshot.isManagedSnapshot)
-        .map(ManagedSnapshot.parse)
-        .toList();
+    final parsedSnapshots =
+        await snapshotStream.transformSnapshots(_config.prefix).toList();
 
     final dataset = Dataset(snapshotStream.key);
     return BackupTask(

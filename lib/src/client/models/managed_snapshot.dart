@@ -57,6 +57,8 @@ class ManagedSnapshot
   DateTime get date =>
       DateTime.utc(timestamp.year, timestamp.month, timestamp.day);
 
+  bool hasPrefix(String? prefix) => prefix == null || this.prefix == prefix;
+
   @override
   String toString() => '${prefix}_${label.name}-$_timestampString';
 

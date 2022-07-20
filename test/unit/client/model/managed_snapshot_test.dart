@@ -93,6 +93,69 @@ void main() {
       expect(sut.date, DateTime.utc(2010, 5, 8));
     });
 
+    testData<Tuple3<ManagedSnapshot, String?, bool>>(
+      'hasPrefix returns correct result',
+      [
+        Tuple3(
+          ManagedSnapshot(
+            prefix: 'prefix',
+            label: SnapshotLabel.weekly,
+            timestamp: DateTime.utc(1),
+          ),
+          'prefix',
+          true,
+        ),
+        Tuple3(
+          ManagedSnapshot(
+            prefix: 'prefix',
+            label: SnapshotLabel.weekly,
+            timestamp: DateTime.utc(1),
+          ),
+          null,
+          true,
+        ),
+        Tuple3(
+          ManagedSnapshot(
+            prefix: 'prefix',
+            label: SnapshotLabel.weekly,
+            timestamp: DateTime.utc(1),
+          ),
+          'pre',
+          false,
+        ),
+        Tuple3(
+          ManagedSnapshot(
+            prefix: '',
+            label: SnapshotLabel.weekly,
+            timestamp: DateTime.utc(1),
+          ),
+          '',
+          true,
+        ),
+        Tuple3(
+          ManagedSnapshot(
+            prefix: '',
+            label: SnapshotLabel.weekly,
+            timestamp: DateTime.utc(1),
+          ),
+          null,
+          true,
+        ),
+        Tuple3(
+          ManagedSnapshot(
+            prefix: '',
+            label: SnapshotLabel.weekly,
+            timestamp: DateTime.utc(1),
+          ),
+          'prefix',
+          false,
+        ),
+      ],
+      (fixture) {
+        expect(fixture.item1.hasPrefix(fixture.item2), fixture.item3);
+      },
+    );
+
     final compareSnapshot = ManagedSnapshot(
       prefix: 'prefix-B',
       label: SnapshotLabel.weekly,

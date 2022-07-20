@@ -8,6 +8,7 @@ import 'package:rxdart/rxdart.dart';
 import '../models/config.dart';
 import '../models/dataset.dart';
 import '../models/managed_snapshot.dart';
+import '../models/util/managed_snapshot_transformer.dart';
 
 final storageAdapterProvider = Provider.family(
   (ref, Config config) => StorageAdapter(config),
@@ -31,9 +32,7 @@ class StorageAdapter {
         .whereType<File>()
         .where((file) => path.extension(file.path) == '.backup')
         .map((file) => path.basenameWithoutExtension(file.path))
-        .where(ManagedSnapshot.isManagedSnapshot)
-        .map(ManagedSnapshot.parse)
-        .where((snapshot) => snapshot.prefix == _config.prefix);
+        .transformSnapshots(_config.prefix);
   }
 
   Future<void> storeSnapshot(
